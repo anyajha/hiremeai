@@ -14,6 +14,7 @@ const input = document.getElementById("question");
 const sendBtn = document.getElementById("send-btn");
 const stopBtn = document.getElementById("stop-btn");
 const micBtn = document.getElementById("mic-btn");
+const listeningStatus = document.getElementById("listening-status");
 const themeToggle = document.getElementById("theme-toggle");
 const moodOrb = document.getElementById("mood-orb");
 const confettiLayer = document.getElementById("confetti-layer");
@@ -60,6 +61,13 @@ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogni
 let recognition = null;
 let listening = false;
 
+function setListeningState(isListening) {
+  listening = isListening;
+  micBtn.classList.toggle("listening", isListening);
+  listeningStatus.textContent = isListening ? "Listening..." : "";
+  micBtn.setAttribute("aria-label", isListening ? "Stop listening" : "Voice input");
+}
+
 if (SpeechRecognition) {
   recognition = new SpeechRecognition();
   recognition.continuous = false;
@@ -70,19 +78,19 @@ if (SpeechRecognition) {
     const transcript = event.results[0][0].transcript;
     input.value = transcript;
     input.focus();
+    setListeningState(false);
   };
 
   recognition.onend = () => {
-    listening = false;
-    micBtn.classList.remove("listening");
+    setListeningState(false);
   };
 
   recognition.onerror = () => {
-    listening = false;
-    micBtn.classList.remove("listening");
+    setListeningState(false);
   };
 } else {
   micBtn.style.display = "none";
+  listeningStatus.style.display = "none";
 }
 
 micBtn.addEventListener("click", () => {
@@ -90,8 +98,7 @@ micBtn.addEventListener("click", () => {
     recognition?.stop();
     return;
   }
-  listening = true;
-  micBtn.classList.add("listening");
+  setListeningState(true);
   recognition.start();
 });
 

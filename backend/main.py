@@ -99,6 +99,7 @@ NOT_IN_RESUME_FACTS = [
 
 PERSONAL_PROFILE = """
 Hobbies: Journaling, fitness, watching psychological thrillers (favorite: Shutter Island), athletics (track and field).
+Favorite subject: Mathematics.
 Something she'd love to learn properly: modeling — she has tried teaching herself the basics but wants professional training.
 
 Strengths:
