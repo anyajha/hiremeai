@@ -24,6 +24,7 @@ const offerCard = document.getElementById("offer-card");
 let abortController = null;
 let activeAnswerBubble = null;
 let activeReader = null;
+let activeResponseText = "";
 
 /* ---------- dark / light theme toggle ---------- */
 const savedTheme = localStorage.getItem("hiremeai-theme");
@@ -304,6 +305,7 @@ async function sendQuestion(question) {
   input.value = "";
   sendBtn.disabled = true;
   setMood("mood-thinking");
+  activeResponseText = "";
 
   if (isHireIntent(question)) {
     triggerHireEasterEgg();
@@ -352,6 +354,8 @@ async function sendQuestion(question) {
     const decoder = new TextDecoder();
     let tickCounter = 0;
     let fullText = "";
+    const isLinkResponse = /https?:\/\/|gmail|outlook|calendar|meeting|schedule/i.test(question);
+    const characterDelay = isLinkResponse ? 2 : 18;
 
     while (true) {
       if (abortController.signal.aborted) {
@@ -368,13 +372,14 @@ async function sendQuestion(question) {
           throw new DOMException("Generation stopped", "AbortError");
         }
         fullText += char;
+        activeResponseText = fullText;
         answerBubble.innerHTML = formatMarkdown(fullText, true);
         
         // Smart scroll: only scroll if user is at bottom
         smartScroll();
         
         // Faster streaming speed - similar to ChatGPT (18ms between characters)
-        await wait(18);
+        await wait(characterDelay);
       }
 
       if (abortController.signal.aborted) {
@@ -406,7 +411,8 @@ async function sendQuestion(question) {
         typingBubble.remove();
       }
       if (activeAnswerBubble?.parentNode) {
-        activeAnswerBubble.remove();
+        activeAnswerBubble.innerHTML = formatMarkdown(activeResponseText);
+        activeAnswerBubble.classList.add("paused");
       }
       activeAnswerBubble = null;
     } else {

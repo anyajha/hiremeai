@@ -285,6 +285,10 @@ html[data-theme="dark"] .bubble a {
   padding: 14px 16px;
 }
 
+.bubble.bot.paused {
+  border: 1px dashed rgba(165, 111, 131, 0.55);
+}
+
 .dot {
   width: 7px;
   height: 7px;
@@ -679,7 +683,7 @@ html[data-theme="dark"] .option-chip {
 
   .composer {
     gap: 8px;
-    margin-bottom: 48px;
+    margin-bottom: 72px;
     padding: 10px 12px max(12px, env(safe-area-inset-bottom));
   }
 
