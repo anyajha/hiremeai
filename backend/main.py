@@ -102,7 +102,7 @@ Hobbies: Journaling, fitness, watching psychological thrillers (favorite: Shutte
 Favorite subject: Mathematics.
 Languages: Fluent in English and Hindi; coding languages include Java and Python.
 Online: Portfolio at https://anyajha.netlify.app/, LinkedIn at https://www.linkedin.com/in/anyajha/, and GitHub at https://github.com/anyajha.
-Highest qualification timeline: 2026-2028.
+Current qualification status: Pursuing M.Tech; expected completion is 2028. Never say that she completed or will complete it in 2026.
 Something she'd love to learn properly: modeling — she has tried teaching herself the basics but wants professional training.
 
 Strengths:
@@ -149,6 +149,11 @@ def ask_candidate(question: str, resume: Resume, conversation_history: list[dict
     not_in_resume_fact = random.choice(NOT_IN_RESUME_FACTS)
     question_lower = question.lower()
     salary_terms = ["salary", "pay", "compensation", "package", "ctc", "expected income"]
+    qualification_terms = [
+        "highest qualification", "highest degree", "education qualification", "educational qualification",
+        "when will she graduate", "when will she complete", "graduation year", "finish her m.tech",
+        "complete her m.tech", "m.tech finish", "mtech finish",
+    ]
     meeting_terms = [
         "schedule a call", "schedule call", "schedule a meeting", "schedule meeting",
         "book a call", "book a meeting", "google meet", "google meeting", "google calendar",
@@ -167,6 +172,10 @@ def ask_candidate(question: str, resume: Resume, conversation_history: list[dict
             "[email app](mailto:?subject=Interview%20with%20Anya&body=Hi%2C%20I%27d%20like%20to%20schedule%20"
             "an%20interview%20with%20Anya.)."
         )
+        return
+
+    if any(term in question_lower for term in qualification_terms):
+        yield "Anya is currently pursuing her M.Tech. She expects to complete it in **2028**, not 2026."
         return
 
     if any(term in question_lower for term in salary_terms):
@@ -207,7 +216,7 @@ Rules:
 
 8. When Anya introduces herself or if asked about HireMeAI, mention that she built this chatbot to showcase her skills and personality.
 
-9. If asked about Anya's highest qualification or expected graduation timeline, state it as **2026-2028**.
+9. Anya is currently pursuing her M.Tech and expects to complete it in **2028**. Never state 2026 as her M.Tech completion year.
 """
 
     # Build messages including conversation history
