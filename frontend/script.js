@@ -60,6 +60,7 @@ function playTick() {
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition = null;
 let listening = false;
+let finalizedTranscript = "";
 
 function setListeningState(isListening) {
   listening = isListening;
@@ -70,23 +71,46 @@ function setListeningState(isListening) {
 
 if (SpeechRecognition) {
   recognition = new SpeechRecognition();
-  recognition.continuous = false;
-  recognition.interimResults = false;
-  recognition.lang = "en-US";
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
+  recognition.lang = "en-IN";
+
+  recognition.onstart = () => {
+    finalizedTranscript = input.value.trim();
+    setListeningState(true);
+  };
 
   recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    input.value = transcript;
+    let interimTranscript = "";
+    for (let index = event.resultIndex; index < event.results.length; index += 1) {
+      const transcript = event.results[index][0].transcript;
+      if (event.results[index].isFinal) {
+        finalizedTranscript += `${transcript} `;
+      } else {
+        interimTranscript += transcript;
+      }
+    }
+    input.value = `${finalizedTranscript}${interimTranscript}`.trim();
     input.focus();
-    setListeningState(false);
   };
 
   recognition.onend = () => {
     setListeningState(false);
   };
 
-  recognition.onerror = () => {
+  recognition.onerror = (event) => {
     setListeningState(false);
+    const errorMessages = {
+      "not-allowed": "Microphone permission is blocked.",
+      "service-not-allowed": "Speech recognition is unavailable in this browser.",
+      network: "Speech recognition needs an internet connection.",
+      "no-speech": "I did not hear anything. Try speaking again.",
+    };
+    listeningStatus.textContent = errorMessages[event.error] || "Speech recognition stopped.";
+    setTimeout(() => {
+      if (!listening) listeningStatus.textContent = "";
+    }, 3000);
   };
 } else {
   micBtn.style.display = "none";
@@ -98,8 +122,17 @@ micBtn.addEventListener("click", () => {
     recognition?.stop();
     return;
   }
+  finalizedTranscript = input.value.trim();
   setListeningState(true);
-  recognition.start();
+  try {
+    recognition.start();
+  } catch (error) {
+    setListeningState(false);
+    listeningStatus.textContent = "Speech recognition is already starting.";
+    setTimeout(() => {
+      listeningStatus.textContent = "";
+    }, 2500);
+  }
 });
 
 /* ---------- mood-ring orb: reflects the vibe of the last answer ---------- */
