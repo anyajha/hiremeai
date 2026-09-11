@@ -586,6 +586,13 @@ html[data-theme="dark"] .option-chip {
 }
 
 @media (max-width: 700px) {
+  #netlify-badge,
+  .netlify-badge,
+  [class*="netlify-badge"] {
+    bottom: 8px !important;
+    z-index: 30 !important;
+  }
+
   body {
     align-items: stretch;
   }
@@ -672,6 +679,7 @@ html[data-theme="dark"] .option-chip {
 
   .composer {
     gap: 8px;
+    margin-bottom: 48px;
     padding: 10px 12px max(12px, env(safe-area-inset-bottom));
   }
 
