@@ -23,6 +23,7 @@ const offerCard = document.getElementById("offer-card");
 // Abort controller for stopping message generation
 let abortController = null;
 let activeAnswerBubble = null;
+let activeReader = null;
 
 /* ---------- dark / light theme toggle ---------- */
 const savedTheme = localStorage.getItem("hiremeai-theme");
@@ -347,11 +348,15 @@ async function sendQuestion(question) {
     smartScroll();
 
     const reader = res.body.getReader();
+    activeReader = reader;
     const decoder = new TextDecoder();
     let tickCounter = 0;
     let fullText = "";
 
     while (true) {
+      if (abortController.signal.aborted) {
+        throw new DOMException("Generation stopped", "AbortError");
+      }
       const { done, value } = await reader.read();
       if (done) break;
       
@@ -359,6 +364,9 @@ async function sendQuestion(question) {
       
       // Add text character by character with streaming effect
       for (const char of chunkText) {
+        if (abortController.signal.aborted) {
+          throw new DOMException("Generation stopped", "AbortError");
+        }
         fullText += char;
         answerBubble.innerHTML = formatMarkdown(fullText, true);
         
@@ -367,6 +375,10 @@ async function sendQuestion(question) {
         
         // Faster streaming speed - similar to ChatGPT (18ms between characters)
         await wait(18);
+      }
+
+      if (abortController.signal.aborted) {
+        throw new DOMException("Generation stopped", "AbortError");
       }
 
       tickCounter += chunkText.length;
@@ -411,6 +423,7 @@ async function sendQuestion(question) {
     input.focus();
     abortController = null;
     activeAnswerBubble = null;
+    activeReader = null;
   }
 }
 
@@ -419,6 +432,7 @@ stopBtn.addEventListener("click", (e) => {
   e.preventDefault();
   if (abortController) {
     abortController.abort();
+    activeReader?.cancel().catch(() => {});
   }
 });
 
