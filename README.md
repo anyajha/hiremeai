@@ -19,10 +19,17 @@ This repository includes `render.yaml` for a single Render web service. Create a
 new Blueprint from the repository, then add the `GROQ_API_KEY` secret when Render
 asks for it. Render will run the FastAPI app and serve the frontend at the same URL.
 
-### Deploy the frontend on Vercel
+### Deploy the frontend on Netlify
 
-For a separate Vercel frontend, import the GitHub repository into Vercel and set
-the project root directory to `frontend`. Leave the framework preset as `Other`
-and leave the build command empty. After the backend is deployed, replace the
-empty `hiremeai-api-base-url` meta tag in `frontend/index.html` with the backend
-URL, for example `https://hiremeai.onrender.com`.
+Import this repository into Netlify. Netlify reads `netlify.toml` and publishes
+the `frontend` directory. The FastAPI backend should remain deployed on Render.
+
+After Render gives you the backend URL, replace the empty API meta tag in
+`frontend/index.html` with that URL:
+
+```html
+<meta name="hiremeai-api-base-url" content="https://your-service.onrender.com" />
+```
+
+Commit and push that change, then trigger a new Netlify deploy. Do not put
+`GROQ_API_KEY` in Netlify; it belongs only in the Render service environment.
