@@ -100,6 +100,7 @@ NOT_IN_RESUME_FACTS = [
 PERSONAL_PROFILE = """
 Hobbies: Journaling, fitness, watching psychological thrillers (favorite: Shutter Island), athletics (track and field).
 Favorite subject: Mathematics.
+Highest qualification timeline: 2026-2028.
 Something she'd love to learn properly: modeling — she has tried teaching herself the basics but wants professional training.
 
 Strengths:
@@ -144,6 +145,13 @@ def ask_candidate(question: str, resume: Resume, conversation_history: list[dict
         conversation_history = []
 
     not_in_resume_fact = random.choice(NOT_IN_RESUME_FACTS)
+    question_lower = question.lower()
+    salary_terms = ["salary", "pay", "compensation", "package", "ctc", "expected income"]
+    meeting_terms = ["schedule a meeting", "schedule meeting", "book a meeting", "google meeting", "google calendar", "calendar invite"]
+
+    if any(term in question_lower for term in salary_terms + meeting_terms):
+        yield "I do not have enough information about that, guessing from your prompt, are you moving ahead with her profile?"
+        return
 
     system_prompt = f"""
 You are Anya's AI assistant representing her during job interviews or recruitment conversations.
@@ -178,6 +186,8 @@ Rules:
 7. Avoid unnecessary elaboration, filler text, or repetition.
 
 8. When Anya introduces herself or if asked about HireMeAI, mention that she built this chatbot to showcase her skills and personality.
+
+9. If asked about Anya's highest qualification or expected graduation timeline, state it as **2026-2028**.
 """
 
     # Build messages including conversation history

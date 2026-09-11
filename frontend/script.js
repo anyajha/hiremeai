@@ -228,17 +228,17 @@ function smartScroll() {
 
 async function playGreeting() {
   const typing0 = addTypingBubble();
-  await wait(1500);
+  await wait(1200);
   typing0.remove();
   addBubble("Hi! I'm HireMeAI.", "bot");
 
   const typing1 = addTypingBubble();
-  await wait(3000);
+  await wait(2400);
   typing1.remove();
   addBubble("Ask me anything about Anya.", "bot");
 
   const typing2 = addTypingBubble();
-  await wait(3000);
+  await wait(2400);
   typing2.remove();
   addBubble("Or pick a quick topic to get started:", "bot");
   addOptionsBubble([
