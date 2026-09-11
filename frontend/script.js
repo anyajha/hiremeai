@@ -284,7 +284,7 @@ async function playGreeting() {
   await wait(2400);
   typing2.remove();
   const linksBubble = addBubble(
-    "Or pick a quick topic to get started. Explore [Anya's portfolio](https://anyajha.netlify.app/), [LinkedIn](https://www.linkedin.com/in/anyajha/), or [GitHub](https://github.com/anyajha).",
+    "Or pick a quick topic to get started.\n\n• [LinkedIn](https://www.linkedin.com/in/anyajha/)\n• [GitHub](https://github.com/anyajha)\n• [Portfolio](https://anyajha.netlify.app/)",
     "bot",
   );
   linksBubble.innerHTML = formatMarkdown(linksBubble.textContent);
@@ -354,7 +354,7 @@ async function sendQuestion(question) {
       // Add text character by character with streaming effect
       for (const char of chunkText) {
         fullText += char;
-        answerBubble.innerHTML = formatMarkdown(fullText);
+        answerBubble.innerHTML = formatMarkdown(fullText, true);
         
         // Smart scroll: only scroll if user is at bottom
         smartScroll();
@@ -369,6 +369,8 @@ async function sendQuestion(question) {
         playTick();
       }
     }
+
+    answerBubble.innerHTML = formatMarkdown(fullText);
 
     // Add bot response to history
     conversationHistory.push({
@@ -414,8 +416,8 @@ stopBtn.addEventListener("click", (e) => {
 });
 
 // Convert markdown to HTML formatting
-function formatMarkdown(text) {
-  return text
+function formatMarkdown(text, isStreaming = false) {
+  let formatted = text
     // Convert markdown links to safe, clickable links.
     .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+|mailto:[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
     // Convert **bold** to <strong>bold</strong>
@@ -424,6 +426,13 @@ function formatMarkdown(text) {
     .replace(/\*([^\*]+?)\*/g, "<em>$1</em>")
     // Ensure line breaks are preserved
     .replace(/\n/g, "<br>");
+
+  if (isStreaming) {
+    // Hide a link's raw URL while its Markdown is still arriving.
+    formatted = formatted.replace(/\[([^\]]+)\]\([^)]*$/g, "$1");
+  }
+
+  return formatted;
 }
 
 form.addEventListener("submit", (e) => {
