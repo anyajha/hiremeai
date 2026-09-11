@@ -22,6 +22,7 @@ const offerCard = document.getElementById("offer-card");
 
 // Abort controller for stopping message generation
 let abortController = null;
+let activeAnswerBubble = null;
 
 /* ---------- dark / light theme toggle ---------- */
 const savedTheme = localStorage.getItem("hiremeai-theme");
@@ -303,6 +304,10 @@ async function sendQuestion(question) {
   sendBtn.disabled = true;
   setMood("mood-thinking");
 
+  if (isHireIntent(question)) {
+    triggerHireEasterEgg();
+  }
+
   // Add user message to history
   conversationHistory.push({
     role: "user",
@@ -335,6 +340,7 @@ async function sendQuestion(question) {
 
     typingBubble.remove();
     const answerBubble = addBubble("", "bot");
+    activeAnswerBubble = answerBubble;
     answerBubble.innerHTML = ""; // Use innerHTML for formatted text
     
     // Scroll to new message once
@@ -382,15 +388,15 @@ async function sendQuestion(question) {
     const moodClass = classifyMood(fullText);
     setMood(moodClass);
     
-    if (isHireIntent(question)) {
-      triggerHireEasterEgg();
-    }
   } catch (err) {
     if (err.name === "AbortError") {
-      // User stopped the generation
       if (typingBubble.parentNode) {
         typingBubble.remove();
       }
+      if (activeAnswerBubble?.parentNode) {
+        activeAnswerBubble.remove();
+      }
+      activeAnswerBubble = null;
     } else {
       typingBubble.remove();
       addBubble("Oops, something went wrong reaching the backend. Is it running?", "bot");
@@ -404,6 +410,7 @@ async function sendQuestion(question) {
     sendBtn.disabled = false;
     input.focus();
     abortController = null;
+    activeAnswerBubble = null;
   }
 }
 
