@@ -418,6 +418,13 @@ stopBtn.addEventListener("click", (e) => {
 // Convert markdown to HTML formatting
 function formatMarkdown(text, isStreaming = false) {
   let formatted = text
+    // Keep known profile links readable when the model returns raw URLs.
+    .replace(/GitHub:\s*https:\/\/github\.com\/anyajha\/?/gi, "[GitHub](https://github.com/anyajha)")
+    .replace(/LinkedIn:\s*https:\/\/www\.linkedin\.com\/in\/anyajha\/?/gi, "[LinkedIn](https://www.linkedin.com/in/anyajha/)")
+    .replace(/Portfolio:\s*https:\/\/anyajha\.netlify\.app\/?/gi, "[Portfolio](https://anyajha.netlify.app/)")
+    .replace(/(?<!\]\()https:\/\/github\.com\/anyajha\/?/g, "[GitHub](https://github.com/anyajha)")
+    .replace(/(?<!\]\()https:\/\/www\.linkedin\.com\/in\/anyajha\/?/g, "[LinkedIn](https://www.linkedin.com/in/anyajha/)")
+    .replace(/(?<!\]\()https:\/\/anyajha\.netlify\.app\/?/g, "[Portfolio](https://anyajha.netlify.app/)")
     // Convert markdown links to safe, clickable links.
     .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+|mailto:[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
     // Convert **bold** to <strong>bold</strong>
