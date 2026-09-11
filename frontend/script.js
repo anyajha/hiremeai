@@ -369,6 +369,8 @@ stopBtn.addEventListener("click", (e) => {
 // Convert markdown to HTML formatting
 function formatMarkdown(text) {
   return text
+    // Convert markdown links to safe, clickable links.
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+|mailto:[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
     // Convert **bold** to <strong>bold</strong>
     .replace(/\*\*([^\*\*]+?)\*\*/g, "<strong>$1</strong>")
     // Convert *italic* to <em>italic</em>

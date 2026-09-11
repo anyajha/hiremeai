@@ -100,6 +100,7 @@ NOT_IN_RESUME_FACTS = [
 PERSONAL_PROFILE = """
 Hobbies: Journaling, fitness, watching psychological thrillers (favorite: Shutter Island), athletics (track and field).
 Favorite subject: Mathematics.
+Languages: Fluent in English and Hindi; coding languages include Java and Python.
 Highest qualification timeline: 2026-2028.
 Something she'd love to learn properly: modeling — she has tried teaching herself the basics but wants professional training.
 
@@ -147,9 +148,23 @@ def ask_candidate(question: str, resume: Resume, conversation_history: list[dict
     not_in_resume_fact = random.choice(NOT_IN_RESUME_FACTS)
     question_lower = question.lower()
     salary_terms = ["salary", "pay", "compensation", "package", "ctc", "expected income"]
-    meeting_terms = ["schedule a meeting", "schedule meeting", "book a meeting", "google meeting", "google calendar", "calendar invite"]
+    meeting_terms = [
+        "schedule a call", "schedule call", "schedule a meeting", "schedule meeting",
+        "book a call", "book a meeting", "google meet", "google meeting", "google calendar",
+        "calendar invite",
+    ]
 
-    if any(term in question_lower for term in salary_terms + meeting_terms):
+    if any(term in question_lower for term in meeting_terms):
+        yield (
+            "Absolutely. Choose a time in [Google Calendar](https://calendar.google.com/calendar/render?"
+            "action=TEMPLATE&text=Interview%20with%20Anya&details=Add%20a%20Google%20Meet%20link%20"
+            "when%20creating%20the%20event), then send the invite by [email](mailto:?subject=Interview%20with%20"
+            "Anya&body=Hi%2C%20I%27d%20like%20to%20schedule%20an%20interview%20with%20Anya.%20Please%20"
+            "choose%20a%20time%20in%20Google%20Calendar%20and%20add%20a%20Google%20Meet%20link.)."
+        )
+        return
+
+    if any(term in question_lower for term in salary_terms):
         yield "I do not have enough information about that, guessing from your prompt, are you moving ahead with her profile?"
         return
 

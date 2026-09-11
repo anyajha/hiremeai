@@ -236,6 +236,17 @@ html[data-theme="dark"] .toggle-knob {
   color: inherit;
 }
 
+.bubble a {
+  color: #8f4564;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+html[data-theme="dark"] .bubble a {
+  color: #e0a1bb;
+}
+
 .bubble br {
   display: block;
   content: "";
