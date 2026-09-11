@@ -61,9 +61,15 @@ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogni
 let recognition = null;
 let listening = false;
 let finalizedTranscript = "";
+let speechSilenceTimer = null;
+const SPEECH_SILENCE_DELAY = 1800;
 
 function setListeningState(isListening) {
   listening = isListening;
+  if (!isListening && speechSilenceTimer) {
+    clearTimeout(speechSilenceTimer);
+    speechSilenceTimer = null;
+  }
   micBtn.classList.toggle("listening", isListening);
   listeningStatus.textContent = isListening ? "Listening..." : "";
   micBtn.setAttribute("aria-label", isListening ? "Stop listening" : "Voice input");
@@ -93,6 +99,10 @@ if (SpeechRecognition) {
     }
     input.value = `${finalizedTranscript}${interimTranscript}`.trim();
     input.focus();
+    if (speechSilenceTimer) clearTimeout(speechSilenceTimer);
+    speechSilenceTimer = setTimeout(() => {
+      if (listening) recognition.stop();
+    }, SPEECH_SILENCE_DELAY);
   };
 
   recognition.onend = () => {
@@ -273,7 +283,11 @@ async function playGreeting() {
   const typing2 = addTypingBubble();
   await wait(2400);
   typing2.remove();
-  addBubble("Or pick a quick topic to get started:", "bot");
+  const linksBubble = addBubble(
+    "Or pick a quick topic to get started. Explore [Anya's portfolio](https://anyajha.netlify.app/), [LinkedIn](https://www.linkedin.com/in/anyajha/), or [GitHub](https://github.com/anyajha).",
+    "bot",
+  );
+  linksBubble.innerHTML = formatMarkdown(linksBubble.textContent);
   addOptionsBubble([
     { label: "🎓 Education", question: "Tell me about Anya's education." },
     { label: "💼 Projects", question: "Tell me about Anya's projects." },

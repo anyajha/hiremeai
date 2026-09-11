@@ -101,6 +101,7 @@ PERSONAL_PROFILE = """
 Hobbies: Journaling, fitness, watching psychological thrillers (favorite: Shutter Island), athletics (track and field).
 Favorite subject: Mathematics.
 Languages: Fluent in English and Hindi; coding languages include Java and Python.
+Online: Portfolio at https://anyajha.netlify.app/, LinkedIn at https://www.linkedin.com/in/anyajha/, and GitHub at https://github.com/anyajha.
 Highest qualification timeline: 2026-2028.
 Something she'd love to learn properly: modeling — she has tried teaching herself the basics but wants professional training.
 
@@ -158,9 +159,13 @@ def ask_candidate(question: str, resume: Resume, conversation_history: list[dict
         yield (
             "Absolutely. Choose a time in [Google Calendar](https://calendar.google.com/calendar/render?"
             "action=TEMPLATE&text=Interview%20with%20Anya&details=Add%20a%20Google%20Meet%20link%20"
-            "when%20creating%20the%20event), then send the invite by [email](mailto:?subject=Interview%20with%20"
-            "Anya&body=Hi%2C%20I%27d%20like%20to%20schedule%20an%20interview%20with%20Anya.%20Please%20"
-            "choose%20a%20time%20in%20Google%20Calendar%20and%20add%20a%20Google%20Meet%20link.)."
+            "when%20creating%20the%20event). You can send the invite with [Gmail](https://mail.google.com/mail/?"
+            "view=cm&fs=1&tf=1&su=Interview%20with%20Anya&body=Hi%2C%20I%27d%20like%20to%20schedule%20an%20"
+            "interview%20with%20Anya.%20Please%20choose%20a%20time%20in%20Google%20Calendar%20and%20add%20a%20"
+            "Google%20Meet%20link.), [Outlook](https://outlook.live.com/mail/0/deeplink/compose?subject=Interview%20"
+            "with%20Anya&body=Hi%2C%20I%27d%20like%20to%20schedule%20an%20interview%20with%20Anya.), or your "
+            "[email app](mailto:?subject=Interview%20with%20Anya&body=Hi%2C%20I%27d%20like%20to%20schedule%20"
+            "an%20interview%20with%20Anya.)."
         )
         return
 
